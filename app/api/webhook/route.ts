@@ -68,6 +68,7 @@ export async function GET(request: Request) {
   return Response.json({
     url: `${origin}/api/webhook`,
     configured: Boolean(process.env.PAYPLUS_WEBHOOK_SECRET),
+    testMode: process.env.NODE_ENV !== "production", // /api/webhook/test is dev-only
     events,
   });
 }

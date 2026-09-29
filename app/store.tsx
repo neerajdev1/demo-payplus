@@ -22,7 +22,7 @@ type Payment = {
 type ApiResult = { data?: Payment; error?: { code?: string; message?: string; details?: unknown } };
 type LogEntry = { id: number; at: string; endpoint: string; request: unknown; status: number; response: unknown };
 type WebhookEvent = { receivedAt: string; event: string; eventId: string; payload: { data?: Partial<Payment> } };
-type WebhookInfo = { url: string; configured: boolean; events: WebhookEvent[] };
+type WebhookInfo = { url: string; configured: boolean; testMode: boolean; events: WebhookEvent[] };
 
 const inr = (v: number | string) =>
   `₹${Number(v).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -397,17 +397,19 @@ export default function Store({ returnedOrder }: { returnedOrder?: string }) {
               </p>
             </div>
           )}
-          <div className="mb-4 flex flex-wrap gap-2">
-            <button className={btnSecondary} disabled={!!busy || !webhooks?.configured} onClick={() => sendTestWebhook("payin.success")}>
-              Test payin.success
-            </button>
-            <button className={btnSecondary} disabled={!!busy || !webhooks?.configured} onClick={() => sendTestWebhook("payin.reverted")}>
-              Test payin.reverted
-            </button>
-            <button className={btnSecondary} disabled={!!busy || !webhooks?.configured} onClick={() => sendTestWebhook("payin.success", true)}>
-              Test bad signature
-            </button>
-          </div>
+          {webhooks?.testMode && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              <button className={btnSecondary} disabled={!!busy || !webhooks.configured} onClick={() => sendTestWebhook("payin.success")}>
+                Test payin.success
+              </button>
+              <button className={btnSecondary} disabled={!!busy || !webhooks.configured} onClick={() => sendTestWebhook("payin.reverted")}>
+                Test payin.reverted
+              </button>
+              <button className={btnSecondary} disabled={!!busy || !webhooks.configured} onClick={() => sendTestWebhook("payin.success", true)}>
+                Test bad signature
+              </button>
+            </div>
+          )}
           {!webhooks || webhooks.events.length === 0 ? (
             <p className="text-sm text-zinc-500">No webhooks received yet.</p>
           ) : (
