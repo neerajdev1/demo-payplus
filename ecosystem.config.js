@@ -5,7 +5,7 @@ module.exports = {
       name: "payplus-test-store",
       script: "node_modules/next/dist/bin/next",
       // Bound to localhost so the app is only reachable through nginx.
-      args: "start --hostname 127.0.0.1 --port 3100",
+      args: "start --hostname 127.0.0.1 --port 7987",
       cwd: __dirname,
       // Keep a single process: webhook events are held in memory, so cluster
       // instances would each see a different list.
