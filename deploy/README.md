@@ -1,6 +1,6 @@
 # Deploy to a VPS (pm2 + nginx) at test.payplus.live
 
-Assumes Ubuntu/Debian with sudo access. The app runs on `127.0.0.1:3100` under pm2 and nginx serves it over HTTPS.
+Assumes Ubuntu/Debian with sudo access. The app runs on `127.0.0.1:7987` under pm2 and nginx serves it over HTTPS.
 
 ## 1. One-time server setup
 
@@ -12,7 +12,7 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs nginx certbot python3-certbot-nginx apache2-utils
 sudo npm install -g pm2
 
-sudo ufw allow 'Nginx Full'   # if ufw is enabled; port 3100 stays private
+sudo ufw allow 'Nginx Full'   # if ufw is enabled; port 7987 stays private
 ```
 
 ## 2. Upload the code
@@ -49,7 +49,7 @@ APP_URL=https://test.payplus.live
 chmod 600 .env
 ```
 
-`APP_URL` is used for the payment `returnUrl` and the webhook URL shown in the UI.
+`APP_URL` sets the domain used for the payment `returnUrl` and the webhook URL shown in the UI. If it is unset, the app uses the domain nginx forwards in `X-Forwarded-Host`. Either way, add `https://test.payplus.live` as an approved origin for your app in the Payplus dashboard, or Payplus rejects checkout with `RETURN_URL_NOT_ALLOWED`.
 
 ## 4. Build and start with pm2
 
@@ -60,7 +60,7 @@ pm2 start ecosystem.config.js
 pm2 save
 pm2 startup        # run the command it prints, so the app starts on reboot
 
-curl -I http://127.0.0.1:3100   # expect HTTP 200
+curl -I http://127.0.0.1:7987   # expect HTTP 200
 ```
 
 ## 5. HTTPS certificate and nginx

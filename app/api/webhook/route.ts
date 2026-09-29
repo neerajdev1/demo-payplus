@@ -1,3 +1,4 @@
+import { publicOrigin } from "@/lib/origin";
 import { isFromPayplus } from "@/lib/webhook";
 
 // Payplus webhook receiver. Set <public https url>/api/webhook in the Payplus dashboard
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
 
 // Lets the UI show the webhook URL, whether the secret is set, and received events.
 export async function GET(request: Request) {
-  const origin = process.env.APP_URL ?? new URL(request.url).origin;
+  const origin = publicOrigin(request);
   return Response.json({
     url: `${origin}/api/webhook`,
     configured: Boolean(process.env.PAYPLUS_WEBHOOK_SECRET),

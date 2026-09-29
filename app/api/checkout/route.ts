@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { findBook } from "@/lib/books";
+import { publicOrigin } from "@/lib/origin";
 import { payplus } from "@/lib/payplus";
 
 type CartLine = { id: string; qty: number };
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
   }
 
   const merchantOrderId = `order-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const origin = process.env.APP_URL ?? request.nextUrl.origin;
+  const origin = publicOrigin(request);
 
   return payplus("/payin/create", {
     amount: total.toFixed(2),
